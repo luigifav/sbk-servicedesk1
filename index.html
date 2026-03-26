@@ -1,0 +1,742 @@
+<!DOCTYPE html>
+<html lang="pt-BR">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Service Portal</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;0,9..40,600;0,9..40,700;1,9..40,400&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <style>
+    /* ─── Reset & Base ─────────────────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+    :root {
+      --bg-deep:       #0b0f1a;
+      --bg-surface:    #111827;
+      --bg-card:       #161d2e;
+      --bg-card-hover: #1c2540;
+      --border:        #1f2d45;
+      --border-hover:  #2a3f60;
+
+      --text-primary:  #e8edf5;
+      --text-secondary:#8a9ab8;
+      --text-muted:    #4e5f7a;
+
+      --accent-blue:   #2d8cf0;
+      --accent-blue-glow: rgba(45,140,240,.18);
+      --accent-teal:   #00c9a7;
+      --accent-teal-glow: rgba(0,201,167,.16);
+
+      --header-h:      64px;
+      --radius-card:   16px;
+      --radius-sm:     8px;
+      --transition:    .32s cubic-bezier(.4,0,.2,1);
+    }
+
+    html, body {
+      height: 100%;
+      font-family: 'DM Sans', system-ui, sans-serif;
+      background: var(--bg-deep);
+      color: var(--text-primary);
+      -webkit-font-smoothing: antialiased;
+    }
+
+    /* ─── Screen System ─────────────────────────────────────────────── */
+    .screen {
+      position: fixed;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      opacity: 0;
+      pointer-events: none;
+      transform: translateY(14px);
+      transition: opacity var(--transition), transform var(--transition);
+      will-change: opacity, transform;
+    }
+
+    .screen.active {
+      opacity: 1;
+      pointer-events: all;
+      transform: translateY(0);
+    }
+
+    .screen.exit {
+      opacity: 0;
+      transform: translateY(-10px);
+      transition: opacity .22s ease, transform .22s ease;
+    }
+
+    /* ─── Global Header ─────────────────────────────────────────────── */
+    header {
+      height: var(--header-h);
+      min-height: var(--header-h);
+      display: flex;
+      align-items: center;
+      padding: 0 28px;
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      gap: 12px;
+      flex-shrink: 0;
+      backdrop-filter: blur(12px);
+    }
+
+    .logo-mark {
+      width: 34px;
+      height: 34px;
+      border-radius: 9px;
+      background: linear-gradient(135deg, var(--accent-blue) 0%, #1a5fb8 100%);
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      flex-shrink: 0;
+    }
+
+    .logo-mark svg { display: block; }
+
+    .logo-text {
+      font-size: 15px;
+      font-weight: 600;
+      letter-spacing: -.01em;
+      color: var(--text-primary);
+      line-height: 1;
+    }
+
+    .logo-text span {
+      display: block;
+      font-size: 10px;
+      font-weight: 400;
+      color: var(--text-muted);
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .04em;
+      margin-top: 2px;
+    }
+
+    .header-spacer { flex: 1; }
+
+    .header-badge {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-muted);
+      background: var(--bg-card);
+      border: 1px solid var(--border);
+      border-radius: 20px;
+      padding: 4px 10px;
+      letter-spacing: .03em;
+    }
+
+    /* ─── Back Button ───────────────────────────────────────────────── */
+    .btn-back {
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      font-size: 13px;
+      font-weight: 500;
+      color: var(--text-secondary);
+      background: transparent;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 6px 13px;
+      cursor: pointer;
+      transition: color .2s, border-color .2s, background .2s;
+      font-family: 'DM Sans', sans-serif;
+    }
+
+    .btn-back:hover {
+      color: var(--text-primary);
+      border-color: var(--border-hover);
+      background: var(--bg-card);
+    }
+
+    /* ─── Screen 1 — Selection ──────────────────────────────────────── */
+    #screen-select {
+      background: var(--bg-deep);
+    }
+
+    .select-body {
+      flex: 1;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      padding: 40px 24px;
+      gap: 0;
+    }
+
+    .select-eyebrow {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .1em;
+      text-transform: uppercase;
+      color: var(--text-muted);
+      margin-bottom: 14px;
+    }
+
+    .select-title {
+      font-size: clamp(22px, 4vw, 32px);
+      font-weight: 700;
+      letter-spacing: -.025em;
+      color: var(--text-primary);
+      text-align: center;
+      margin-bottom: 10px;
+      line-height: 1.2;
+    }
+
+    .select-subtitle {
+      font-size: 15px;
+      color: var(--text-secondary);
+      text-align: center;
+      max-width: 440px;
+      line-height: 1.6;
+      margin-bottom: 48px;
+      font-weight: 400;
+    }
+
+    /* ─── Cards Grid ────────────────────────────────────────────────── */
+    .cards-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+      gap: 20px;
+      width: 100%;
+      max-width: 720px;
+    }
+
+    .card {
+      position: relative;
+      background: var(--bg-card);
+      border-radius: var(--radius-card);
+      border: 1px solid var(--border);
+      padding: 32px 28px 28px;
+      cursor: pointer;
+      overflow: hidden;
+      transition: transform .28s cubic-bezier(.34,1.4,.64,1),
+                  border-color .25s ease,
+                  background .25s ease,
+                  box-shadow .25s ease;
+      outline: none;
+    }
+
+    .card:focus-visible {
+      outline: 2px solid var(--accent-blue);
+      outline-offset: 2px;
+    }
+
+    /* Ambient glow layer */
+    .card::before {
+      content: '';
+      position: absolute;
+      inset: 0;
+      border-radius: inherit;
+      opacity: 0;
+      transition: opacity .3s ease;
+      pointer-events: none;
+    }
+
+    /* Top accent bar */
+    .card::after {
+      content: '';
+      position: absolute;
+      top: 0; left: 0; right: 0;
+      height: 3px;
+      border-radius: var(--radius-card) var(--radius-card) 0 0;
+      transition: opacity .25s ease;
+    }
+
+    /* ── Card A — Failure (blue) ── */
+    .card-failure { --c-accent: var(--accent-blue); --c-glow: var(--accent-blue-glow); }
+    .card-failure::before { background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--accent-blue-glow), transparent); }
+    .card-failure::after  { background: linear-gradient(90deg, var(--accent-blue), #1a6fcf); }
+
+    /* ── Card B — Request (teal) ── */
+    .card-request { --c-accent: var(--accent-teal); --c-glow: var(--accent-teal-glow); }
+    .card-request::before { background: radial-gradient(ellipse 80% 60% at 50% 0%, var(--accent-teal-glow), transparent); }
+    .card-request::after  { background: linear-gradient(90deg, var(--accent-teal), #009e82); }
+
+    .card:hover {
+      transform: translateY(-5px) scale(1.012);
+      border-color: var(--border-hover);
+      background: var(--bg-card-hover);
+    }
+
+    .card:hover::before { opacity: 1; }
+
+    .card:active { transform: translateY(-2px) scale(1.006); }
+
+    .card-icon-wrap {
+      width: 52px;
+      height: 52px;
+      border-radius: 14px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      margin-bottom: 20px;
+      background: color-mix(in srgb, var(--c-accent) 14%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c-accent) 22%, transparent);
+      transition: background .25s, border-color .25s;
+    }
+
+    .card:hover .card-icon-wrap {
+      background: color-mix(in srgb, var(--c-accent) 22%, transparent);
+      border-color: color-mix(in srgb, var(--c-accent) 36%, transparent);
+    }
+
+    .card-icon-wrap svg { display: block; }
+
+    .card-label {
+      font-size: 18px;
+      font-weight: 700;
+      letter-spacing: -.02em;
+      color: var(--text-primary);
+      margin-bottom: 8px;
+      line-height: 1.2;
+    }
+
+    .card-desc {
+      font-size: 13.5px;
+      color: var(--text-secondary);
+      line-height: 1.65;
+      font-weight: 400;
+    }
+
+    .card-tags {
+      display: flex;
+      flex-wrap: wrap;
+      gap: 6px;
+      margin-top: 20px;
+    }
+
+    .tag {
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      letter-spacing: .02em;
+      padding: 3px 9px;
+      border-radius: 20px;
+      background: color-mix(in srgb, var(--c-accent) 10%, transparent);
+      color: color-mix(in srgb, var(--c-accent) 90%, #fff);
+      border: 1px solid color-mix(in srgb, var(--c-accent) 20%, transparent);
+    }
+
+    .card-arrow {
+      position: absolute;
+      bottom: 24px;
+      right: 24px;
+      width: 32px;
+      height: 32px;
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: color-mix(in srgb, var(--c-accent) 12%, transparent);
+      border: 1px solid color-mix(in srgb, var(--c-accent) 18%, transparent);
+      transition: transform .25s cubic-bezier(.34,1.4,.64,1),
+                  background .2s, border-color .2s;
+    }
+
+    .card:hover .card-arrow {
+      transform: translate(3px, -3px);
+      background: color-mix(in srgb, var(--c-accent) 22%, transparent);
+    }
+
+    /* ─── Screens 2A & 2B — Form ────────────────────────────────────── */
+    #screen-failure,
+    #screen-request {
+      background: var(--bg-deep);
+    }
+
+    .form-header {
+      display: flex;
+      align-items: center;
+      gap: 16px;
+      padding: 0 28px;
+      height: var(--header-h);
+      min-height: var(--header-h);
+      background: var(--bg-surface);
+      border-bottom: 1px solid var(--border);
+      flex-shrink: 0;
+    }
+
+    .form-header-divider {
+      width: 1px;
+      height: 20px;
+      background: var(--border);
+    }
+
+    .form-header-title {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      font-size: 14px;
+      font-weight: 600;
+      color: var(--text-primary);
+      letter-spacing: -.01em;
+    }
+
+    .form-header-title .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      flex-shrink: 0;
+    }
+
+    .dot-blue { background: var(--accent-blue); box-shadow: 0 0 8px var(--accent-blue); }
+    .dot-teal { background: var(--accent-teal); box-shadow: 0 0 8px var(--accent-teal); }
+
+    .iframe-wrap {
+      flex: 1;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .iframe-wrap iframe {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+      border: none;
+      display: block;
+    }
+
+    .iframe-loading {
+      position: absolute;
+      inset: 0;
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 16px;
+      background: var(--bg-deep);
+      color: var(--text-muted);
+      font-size: 13px;
+      transition: opacity .4s ease;
+    }
+
+    .iframe-loading.hidden { opacity: 0; pointer-events: none; }
+
+    .spinner {
+      width: 36px;
+      height: 36px;
+      border: 2px solid var(--border);
+      border-top-color: var(--accent-blue);
+      border-radius: 50%;
+      animation: spin .8s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    /* ─── Footer ────────────────────────────────────────────────────── */
+    .portal-footer {
+      height: 40px;
+      min-height: 40px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background: var(--bg-surface);
+      border-top: 1px solid var(--border);
+      font-size: 11px;
+      font-family: 'DM Mono', monospace;
+      color: var(--text-muted);
+      letter-spacing: .03em;
+      flex-shrink: 0;
+    }
+
+    /* ─── Responsive ────────────────────────────────────────────────── */
+    @media (max-width: 520px) {
+      header, .form-header { padding: 0 18px; }
+
+      .select-body { padding: 32px 16px; }
+
+      .card { padding: 24px 20px 22px; }
+
+      .card-arrow { bottom: 18px; right: 18px; }
+
+      .logo-text span { display: none; }
+    }
+
+    @media (max-width: 380px) {
+      .header-badge { display: none; }
+    }
+  </style>
+</head>
+<body>
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCREEN 1 — Selection
+═══════════════════════════════════════════════════════════════ -->
+<section id="screen-select" class="screen active" role="main" aria-label="Portal de Serviços">
+
+  <!-- Shared header -->
+  <header>
+    <div class="logo-mark" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white" opacity=".9"/>
+        <rect x="10" y="2" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+        <rect x="2" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+        <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".9"/>
+      </svg>
+    </div>
+    <div class="logo-text">
+      Service Portal
+      <span>v2.0 · powered by ServiceNow</span>
+    </div>
+    <div class="header-spacer"></div>
+    <div class="header-badge">ITSM</div>
+  </header>
+
+  <div class="select-body">
+    <p class="select-eyebrow">Central de Atendimento</p>
+    <h1 class="select-title">Como podemos ajudar?</h1>
+    <p class="select-subtitle">
+      Selecione o tipo de atendimento que melhor descreve a sua necessidade.
+      Vamos direcionar você para o formulário correto.
+    </p>
+
+    <div class="cards-grid" role="list">
+
+      <!-- Card: Reportar Falha -->
+      <article class="card card-failure"
+               role="listitem"
+               tabindex="0"
+               aria-label="Reportar Falha — incidentes e falhas técnicas"
+               onclick="showScreen('failure')"
+               onkeydown="if(event.key==='Enter'||event.key===' '){showScreen('failure')}">
+
+        <div class="card-icon-wrap" aria-hidden="true">
+          <!-- Alert / Warning icon -->
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M10.29 3.86L1.82 18a2 2 0 001.71 3h16.94a2 2 0 001.71-3L13.71 3.86a2 2 0 00-3.42 0z"/>
+            <line x1="12" y1="9" x2="12" y2="13"/>
+            <line x1="12" y1="17" x2="12.01" y2="17"/>
+          </svg>
+        </div>
+
+        <h2 class="card-label">Reportar Falha</h2>
+        <p class="card-desc">
+          Algo está fora do ar ou funcionando de forma incorreta?
+          Registre incidentes, falhas técnicas e interrupções de serviço para
+          que nossa equipe resolva o mais rápido possível.
+        </p>
+
+        <div class="card-tags" aria-label="Exemplos de uso">
+          <span class="tag">Sistema fora do ar</span>
+          <span class="tag">Erro inesperado</span>
+          <span class="tag">Lentidão</span>
+          <span class="tag">Falha de acesso</span>
+        </div>
+
+        <div class="card-arrow" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--accent-blue)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="2" y1="12" x2="12" y2="2"/>
+            <polyline points="5,2 12,2 12,9"/>
+          </svg>
+        </div>
+      </article>
+
+      <!-- Card: Abrir Solicitação -->
+      <article class="card card-request"
+               role="listitem"
+               tabindex="0"
+               aria-label="Abrir Solicitação — pedidos de serviços e produtos"
+               onclick="showScreen('request')"
+               onkeydown="if(event.key==='Enter'||event.key===' '){showScreen('request')}">
+
+        <div class="card-icon-wrap" aria-hidden="true">
+          <!-- Clipboard / Request icon -->
+          <svg width="26" height="26" viewBox="0 0 24 24" fill="none" stroke="var(--accent-teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M16 4h2a2 2 0 012 2v14a2 2 0 01-2 2H6a2 2 0 01-2-2V6a2 2 0 012-2h2"/>
+            <rect x="8" y="2" width="8" height="4" rx="1" ry="1"/>
+            <line x1="12" y1="11" x2="12" y2="17"/>
+            <line x1="9" y1="14" x2="15" y2="14"/>
+          </svg>
+        </div>
+
+        <h2 class="card-label">Abrir Solicitação</h2>
+        <p class="card-desc">
+          Precisa de um novo recurso, acesso, equipamento ou serviço?
+          Envie uma solicitação formal e acompanhe o andamento pelo
+          número de protocolo gerado.
+        </p>
+
+        <div class="card-tags" aria-label="Exemplos de uso">
+          <span class="tag">Novo acesso</span>
+          <span class="tag">Software</span>
+          <span class="tag">Equipamento</span>
+          <span class="tag">Configuração</span>
+        </div>
+
+        <div class="card-arrow" aria-hidden="true">
+          <svg width="14" height="14" viewBox="0 0 14 14" fill="none" stroke="var(--accent-teal)" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round">
+            <line x1="2" y1="12" x2="12" y2="2"/>
+            <polyline points="5,2 12,2 12,9"/>
+          </svg>
+        </div>
+      </article>
+
+    </div>
+  </div>
+
+  <footer class="portal-footer">ITSM · Service Portal · Todos os direitos reservados</footer>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCREEN 2A — Failure Form
+═══════════════════════════════════════════════════════════════ -->
+<section id="screen-failure" class="screen" role="main" aria-label="Formulário de Falha">
+
+  <header class="form-header">
+    <div class="logo-mark" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white" opacity=".9"/>
+        <rect x="10" y="2" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+        <rect x="2" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+        <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".9"/>
+      </svg>
+    </div>
+    <div class="logo-text">Service Portal</div>
+    <div class="form-header-divider" aria-hidden="true"></div>
+    <div class="form-header-title">
+      <span class="dot dot-blue" aria-hidden="true"></span>
+      Reportar Falha
+    </div>
+    <div class="header-spacer"></div>
+    <button class="btn-back" onclick="showScreen('select')" aria-label="Voltar à seleção">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="8,1 3,6.5 8,12"/>
+      </svg>
+      Voltar
+    </button>
+  </header>
+
+  <div class="iframe-wrap">
+    <div class="iframe-loading" id="loading-failure" aria-label="Carregando formulário">
+      <div class="spinner" role="status" aria-hidden="true"></div>
+      <span>Carregando formulário…</span>
+    </div>
+    <iframe id="iframe-failure"
+            class="clickup-embed clickup-dynamic-height"
+            title="Formulário de Reportar Falha"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+            onwheel=""
+            onload="onIframeLoad('failure')"
+            tabindex="0">
+    </iframe>
+  </div>
+
+  <footer class="portal-footer">ITSM · Service Portal · Todos os direitos reservados</footer>
+</section>
+
+
+<!-- ═══════════════════════════════════════════════════════════
+     SCREEN 2B — Request Form
+═══════════════════════════════════════════════════════════════ -->
+<section id="screen-request" class="screen" role="main" aria-label="Formulário de Solicitação">
+
+  <header class="form-header">
+    <div class="logo-mark" aria-hidden="true">
+      <svg width="18" height="18" viewBox="0 0 18 18" fill="none">
+        <rect x="2" y="2" width="6" height="6" rx="1.5" fill="white" opacity=".9"/>
+        <rect x="10" y="2" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+        <rect x="2" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".55"/>
+        <rect x="10" y="10" width="6" height="6" rx="1.5" fill="white" opacity=".9"/>
+      </svg>
+    </div>
+    <div class="logo-text">Service Portal</div>
+    <div class="form-header-divider" aria-hidden="true"></div>
+    <div class="form-header-title">
+      <span class="dot dot-teal" aria-hidden="true"></span>
+      Abrir Solicitação
+    </div>
+    <div class="header-spacer"></div>
+    <button class="btn-back" onclick="showScreen('select')" aria-label="Voltar à seleção">
+      <svg width="13" height="13" viewBox="0 0 13 13" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+        <polyline points="8,1 3,6.5 8,12"/>
+      </svg>
+      Voltar
+    </button>
+  </header>
+
+  <div class="iframe-wrap">
+    <div class="iframe-loading" id="loading-request" aria-label="Carregando formulário">
+      <div class="spinner" role="status" aria-hidden="true"></div>
+      <span>Carregando formulário…</span>
+    </div>
+    <iframe id="iframe-request"
+            class="clickup-embed clickup-dynamic-height"
+            title="Formulário de Abrir Solicitação"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+            onwheel=""
+            onload="onIframeLoad('request')"
+            tabindex="0">
+    </iframe>
+  </div>
+
+  <footer class="portal-footer">ITSM · Service Portal · Todos os direitos reservados</footer>
+</section>
+
+
+<script>
+  /* ── URL Constants — replace these two values to go live ── */
+  const FAILURE_FORM_URL = "https://forms.clickup.com/90132985812/f/2ky5gdym-3353/P0WU25TF3KFNZXEVXT";
+  const REQUEST_FORM_URL = "https://forms.clickup.com/90132985812/f/2ky5gdym-3333/NIRV7VPPJXPTL0RS1I";
+
+  /* ── Internal state ── */
+  let current = 'select';
+  let iframeLoaded = { failure: false, request: false };
+
+  const screens = {
+    select:  document.getElementById('screen-select'),
+    failure: document.getElementById('screen-failure'),
+    request: document.getElementById('screen-request'),
+  };
+
+  /* ── showScreen ── */
+  function showScreen(name) {
+    if (name === current) return;
+
+    const leaving = screens[current];
+    const arriving = screens[name];
+
+    /* Exit animation on current */
+    leaving.classList.add('exit');
+
+    setTimeout(() => {
+      leaving.classList.remove('active', 'exit');
+      arriving.classList.add('active');
+
+      /* Lazy-load iframe on first visit */
+      if (name === 'failure' && !iframeLoaded.failure) {
+        const iframe = document.getElementById('iframe-failure');
+        iframe.src = FAILURE_FORM_URL;
+        /* onload handler will hide the spinner */
+      }
+      if (name === 'request' && !iframeLoaded.request) {
+        const iframe = document.getElementById('iframe-request');
+        iframe.src = REQUEST_FORM_URL;
+      }
+
+      /* Focus management */
+      arriving.querySelector('button, [tabindex="0"]')?.focus({ preventScroll: true });
+
+      current = name;
+    }, 220);
+  }
+
+  /* ── Hide loading spinner when iframe content is ready ── */
+  function onIframeLoad(name) {
+    iframeLoaded[name] = true;
+    const loader = document.getElementById('loading-' + name);
+    if (loader) loader.classList.add('hidden');
+  }
+
+  /* ── Keyboard: Escape returns to selection ── */
+  document.addEventListener('keydown', function(e) {
+    if (e.key === 'Escape' && current !== 'select') {
+      showScreen('select');
+    }
+  });
+</script>
+
+
+<script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js"></script>
+</body>
+</html>
