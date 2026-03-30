@@ -325,17 +325,32 @@
 
     /* ─── Form Screens (2A & 2B) ────────────────────────────────────── */
     #screen-failure,
-    #screen-request { background: var(--bg); }
+    #screen-request {
+      background: var(--bg);
+      overflow-y: auto;
+    }
+
+    /* Sticky header only on form screens so it stays visible while scrolling */
+    #screen-failure .site-header,
+    #screen-request .site-header {
+      position: sticky;
+      top: 0;
+      z-index: 10;
+    }
+    #screen-failure .header-rule,
+    #screen-request .header-rule {
+      position: sticky;
+      top: var(--header-h);
+      z-index: 10;
+    }
 
     .iframe-wrap {
-      flex: 1;
       position: relative;
-      overflow-y: auto;
       background: var(--bg);
     }
     .iframe-wrap iframe {
       width: 100%;
-      min-height: 100%;
+      min-height: 80vh;
       border: none;
       display: block;
       background: transparent;
