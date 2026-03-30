@@ -325,36 +325,66 @@
 
     /* ─── Form Screens (2A & 2B) ────────────────────────────────────── */
     #screen-failure,
-    #screen-request {
-      background: var(--bg);
+    #screen-request { background: var(--bg); }
+
+    /*
+     * When a form screen is active, switch from fixed to absolute so the
+     * native browser scrollbar controls the page — not an inner container.
+     * The html.form-active class is toggled by JS in showScreen().
+     */
+    html.form-active,
+    html.form-active body {
+      height: auto;
+      min-height: 100%;
       overflow-y: auto;
     }
 
-    /* Sticky header only on form screens so it stays visible while scrolling */
-    #screen-failure .site-header,
-    #screen-request .site-header {
+    html.form-active #screen-failure.active,
+    html.form-active #screen-request.active {
+      position: absolute;
+      min-height: 100vh;
+    }
+
+    /* Sticky header so it stays visible while the page scrolls */
+    html.form-active #screen-failure.active .site-header,
+    html.form-active #screen-request.active .site-header {
       position: sticky;
       top: 0;
       z-index: 10;
     }
-    #screen-failure .header-rule,
-    #screen-request .header-rule {
+    html.form-active #screen-failure.active .header-rule,
+    html.form-active #screen-request.active .header-rule {
       position: sticky;
       top: var(--header-h);
       z-index: 10;
     }
 
     .iframe-wrap {
+      flex: 1;
       position: relative;
+      overflow: hidden;
       background: var(--bg);
-      flex-shrink: 0;
     }
     .iframe-wrap iframe {
+      position: absolute;
+      inset: 0;
       width: 100%;
-      min-height: 80vh;
+      height: 100%;
       border: none;
       display: block;
       background: transparent;
+    }
+
+    /* When form is active, let the iframe-wrap grow with ClickUp content */
+    html.form-active .iframe-wrap {
+      flex: none;
+      overflow: visible;
+      min-height: calc(100vh - var(--header-h) - 4px - 38px);
+    }
+    html.form-active .iframe-wrap iframe {
+      position: static;
+      height: auto;
+      min-height: calc(100vh - var(--header-h) - 4px - 38px);
     }
 
     .iframe-loading {
@@ -689,6 +719,11 @@
     setTimeout(() => {
       leaving.classList.remove('active', 'exit');
       arriving.classList.add('active');
+
+      /* Switch between fixed (select) and scrollable-page (form) layouts */
+      const isForm = name === 'failure' || name === 'request';
+      document.documentElement.classList.toggle('form-active', isForm);
+      if (isForm) window.scrollTo(0, 0);
 
       /* Lazy-load iframes on first visit */
       if (name === 'failure' && !loaded.failure) {
