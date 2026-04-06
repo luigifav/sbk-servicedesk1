@@ -711,6 +711,15 @@
   function showScreen(name) {
     if (name === current) return;
 
+    /* Reset iframe when leaving a form screen so it reloads fresh next time */
+    if (current === 'failure' || current === 'request') {
+      const iframe = document.getElementById('iframe-' + current);
+      const loader = document.getElementById('loading-' + current);
+      iframe.src = '';
+      loaded[current] = false;
+      if (loader) loader.classList.remove('hidden');
+    }
+
     const leaving  = screens[current];
     const arriving = screens[name];
 
