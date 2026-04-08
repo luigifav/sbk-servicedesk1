@@ -383,8 +383,8 @@
     }
     html.form-active .iframe-wrap iframe {
       position: static;
-      height: 600px;      /* starter height, overridden by postMessage handler */
-      min-height: 0;      /* never constrain below what JS sets */
+      height: 2500px;     /* safe floor — postMessage handler grows it further if needed */
+      min-height: 2500px;
     }
 
     .iframe-loading {
@@ -764,9 +764,11 @@
     var d = e.data;
     if (!d || typeof d !== 'object') return;
 
-    /* Support both message shapes ClickUp is known to send */
-    var h = (typeof d.height === 'number') ? d.height
-          : (typeof d.value  === 'number') ? d.value
+    /* Support all known ClickUp message shapes */
+    var h = (typeof d.height === 'number')              ? d.height
+          : (typeof d.value  === 'number')              ? d.value
+          : (typeof d.clickup_form_height === 'number') ? d.clickup_form_height
+          : (d.data && typeof d.data.height === 'number') ? d.data.height
           : null;
     if (!h || h <= 0) return;
 
@@ -774,7 +776,7 @@
     ['failure', 'request'].forEach(function(name) {
       var iframe = document.getElementById('iframe-' + name);
       if (iframe && iframe.contentWindow === e.source) {
-        iframe.style.height = Math.max(h, 800) + 'px';
+        iframe.style.height = (h + 20) + 'px';   /* +20px breathing room */
       }
     });
   });
