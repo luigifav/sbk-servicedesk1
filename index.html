@@ -383,8 +383,8 @@
     }
     html.form-active .iframe-wrap iframe {
       position: static;
-      height: auto;
-      min-height: 1100px;
+      height: 600px;      /* starter height, overridden by postMessage handler */
+      min-height: 0;      /* never constrain below what JS sets */
     }
 
     .iframe-loading {
@@ -716,6 +716,7 @@
       const iframe = document.getElementById('iframe-' + current);
       const loader = document.getElementById('loading-' + current);
       iframe.src = '';
+      iframe.style.height = '';  /* clear postMessage-set height for clean reload */
       loaded[current] = false;
       if (loader) loader.classList.remove('hidden');
     }
@@ -753,6 +754,30 @@
     const el = document.getElementById('loading-' + name);
     if (el) el.classList.add('hidden');
   }
+
+  /* ── ClickUp dynamic height — postMessage handler ──────────────────────
+     ClickUp's forms-embed/v1.js may miss lazy-loaded iframes.
+     This listener acts as a reliable fallback: it catches all resize
+     messages from forms.clickup.com and explicitly updates iframe height. */
+  window.addEventListener('message', function(e) {
+    if (e.origin !== 'https://forms.clickup.com') return;
+    var d = e.data;
+    if (!d || typeof d !== 'object') return;
+
+    /* Support both message shapes ClickUp is known to send */
+    var h = (typeof d.height === 'number') ? d.height
+          : (typeof d.value  === 'number') ? d.value
+          : null;
+    if (!h || h <= 0) return;
+
+    /* Identify which iframe sent this message by matching contentWindow */
+    ['failure', 'request'].forEach(function(name) {
+      var iframe = document.getElementById('iframe-' + name);
+      if (iframe && iframe.contentWindow === e.source) {
+        iframe.style.height = Math.max(h, 800) + 'px';
+      }
+    });
+  });
 
   /* ── Escape returns to selection ───────────────────────────────────── */
   document.addEventListener('keydown', e => {
