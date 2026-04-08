@@ -383,8 +383,8 @@
     }
     html.form-active .iframe-wrap iframe {
       position: static;
-      height: 1100px;     /* initial/fallback; overridden by postMessage handler */
-      min-height: 1100px;
+      height: 600px;      /* starter height, overridden by postMessage handler */
+      min-height: 0;      /* never constrain below what JS sets */
     }
 
     .iframe-loading {
@@ -716,6 +716,7 @@
       const iframe = document.getElementById('iframe-' + current);
       const loader = document.getElementById('loading-' + current);
       iframe.src = '';
+      iframe.style.height = '';  /* clear postMessage-set height for clean reload */
       loaded[current] = false;
       if (loader) loader.classList.remove('hidden');
     }
@@ -759,7 +760,7 @@
      This listener acts as a reliable fallback: it catches all resize
      messages from forms.clickup.com and explicitly updates iframe height. */
   window.addEventListener('message', function(e) {
-    if (!e.origin.includes('clickup.com')) return;
+    if (e.origin !== 'https://forms.clickup.com') return;
     var d = e.data;
     if (!d || typeof d !== 'object') return;
 
