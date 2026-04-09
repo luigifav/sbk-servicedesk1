@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SBK — Portal de Atendimento</title>
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -431,13 +431,38 @@
     /* ─── Responsive ────────────────────────────────────────────────── */
     @media (max-width: 560px) {
       .site-header { padding: 0 20px; }
-      .select-body { padding: 36px 16px 48px; }
+      .select-body {
+        padding: 36px 16px 48px;
+        justify-content: flex-start;        /* push content to top so overflow scrolls down */
+        overflow-y: auto;                   /* scroll within the flex-1 constrained container */
+        -webkit-overflow-scrolling: touch;  /* iOS momentum scroll */
+      }
+      .cards-grid  { grid-template-columns: 1fr; } /* explicit single column */
       .card        { padding: 24px 20px 22px; }
+      .card-cta    {
+        width: 100%;
+        justify-content: center;
+        min-height: 44px;    /* iOS/WCAG minimum touch target */
+        align-items: center;
+      }
       .sbk-sub     { display: none; }
     }
     @media (max-width: 420px) {
       .h-context { display: none; }
       .h-sep     { display: none; }
+    }
+    @media (max-width: 768px) {
+      /* Dynamic viewport unit: avoids content crop when mobile URL bar is visible */
+      html.form-active #screen-failure.active,
+      html.form-active #screen-request.active {
+        min-height: 100dvh;
+      }
+      /* Safe area inset for iPhone home indicator */
+      .portal-footer {
+        padding-bottom: env(safe-area-inset-bottom);
+        height: calc(38px + env(safe-area-inset-bottom));
+        min-height: calc(38px + env(safe-area-inset-bottom));
+      }
     }
   </style>
 </head>
