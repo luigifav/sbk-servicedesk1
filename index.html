@@ -6,6 +6,7 @@
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SBK — Portal de Atendimento</title>
+  <!-- TODO: self-host Plus Jakarta Sans to eliminate Google Fonts dependency and enable SRI -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet" />
@@ -717,10 +718,12 @@
 </section>
 
 
-<script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js"></script>
+<script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js" crossorigin="anonymous"></script>
+<!-- TODO: add integrity="sha384-..." after computing hash of forms-embed/v1.js -->
 
 <script>
   /* ── URL Constants ─────────────────────────────────────────────────── */
+  <!-- NOTE: restrict embedding to this domain in ClickUp's Allowed Domains settings -->
   const FAILURE_FORM_URL = "https://forms.clickup.com/90132985812/f/2ky5gdym-3353/P0WU25TF3KFNZXEVXT";
   const REQUEST_FORM_URL = "https://forms.clickup.com/90132985812/f/2ky5gdym-3333/NIRV7VPPJXPTL0RS1I";
 
