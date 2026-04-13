@@ -2,8 +2,11 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app-cdn.clickup.com 'unsafe-inline'; frame-src https://forms.clickup.com; font-src https://fonts.gstatic.com https://fonts.googleapis.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data:; connect-src 'none'" />
+  <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SBK — Portal de Atendimento</title>
+  <!-- TODO: self-host Plus Jakarta Sans to eliminate Google Fonts dependency and enable SRI -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
   <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet" />
@@ -523,7 +526,7 @@
         <p class="card-desc">
           Algo está fora do ar ou funcionando incorretamente?
           Registre incidentes, falhas técnicas e interrupções para
-          que nossa equipe atue com prioridade, acompanhe o andamento pelo email que receberão de servicedesk@sbk.com.br.
+          que nossa equipe atue com prioridade, acompanhe o andamento pelo email que receberão de <span class="obf-email" data-u="servicedesk" data-d="sbk.com.br" aria-label="servicedesk arroba sbk.com.br"></span>.
         </p>
 
         <div class="card-tags" aria-label="Exemplos de uso">
@@ -566,7 +569,7 @@
         <p class="card-desc">
           Precisa de um novo recurso, acesso, equipamento ou serviço?
           Envie uma solicitação formal e acompanhe o andamento pelo
-          email que receberão de servicedesk@sbk.com.br.
+          email que receberão de <span class="obf-email" data-u="servicedesk" data-d="sbk.com.br" aria-label="servicedesk arroba sbk.com.br"></span>.
         </p>
 
         <div class="card-tags" aria-label="Exemplos de uso">
@@ -642,7 +645,7 @@
     <iframe id="iframe-failure"
             class="clickup-embed clickup-dynamic-height"
             title="Formulário — Reportar Falha"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+            sandbox="allow-scripts allow-forms"
             onwheel=""
             onload="onIframeLoad('failure')"
             tabindex="0">
@@ -702,7 +705,7 @@
     <iframe id="iframe-request"
             class="clickup-embed clickup-dynamic-height"
             title="Formulário — Abrir Solicitação"
-            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
+            sandbox="allow-scripts allow-forms"
             onwheel=""
             onload="onIframeLoad('request')"
             tabindex="0">
@@ -715,10 +718,12 @@
 </section>
 
 
-<script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js"></script>
+<script async src="https://app-cdn.clickup.com/assets/js/forms-embed/v1.js" crossorigin="anonymous"></script>
+<!-- TODO: add integrity="sha384-..." after computing hash of forms-embed/v1.js -->
 
 <script>
   /* ── URL Constants ─────────────────────────────────────────────────── */
+  /* NOTE: restrict embedding to this domain in ClickUp's Allowed Domains settings */
   const FAILURE_FORM_URL = "https://forms.clickup.com/90132985812/f/2ky5gdym-3353/P0WU25TF3KFNZXEVXT";
   const REQUEST_FORM_URL = "https://forms.clickup.com/90132985812/f/2ky5gdym-3333/NIRV7VPPJXPTL0RS1I";
 
@@ -795,7 +800,7 @@
           : (typeof d.clickup_form_height === 'number') ? d.clickup_form_height
           : (d.data && typeof d.data.height === 'number') ? d.data.height
           : null;
-    if (!h || h <= 0) return;
+    if (h < 100 || h > 10000) return;
 
     /* Identify which iframe sent this message by matching contentWindow */
     ['failure', 'request'].forEach(function(name) {
@@ -809,6 +814,14 @@
   /* ── Escape returns to selection ───────────────────────────────────── */
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && current !== 'select') showScreen('select');
+  });
+</script>
+
+<script>
+  /* ── Email obfuscation — reconstruct addresses from data attributes ── */
+  document.querySelectorAll('.obf-email').forEach(function(el) {
+    var addr = el.dataset.u + '\u0040' + el.dataset.d;
+    el.textContent = addr;
   });
 </script>
 
