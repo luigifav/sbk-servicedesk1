@@ -795,7 +795,7 @@
           : (typeof d.clickup_form_height === 'number') ? d.clickup_form_height
           : (d.data && typeof d.data.height === 'number') ? d.data.height
           : null;
-    if (!h || h <= 0) return;
+    if (h < 100 || h > 10000) return;
 
     /* Identify which iframe sent this message by matching contentWindow */
     ['failure', 'request'].forEach(function(name) {
