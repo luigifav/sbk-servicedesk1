@@ -2,7 +2,7 @@
 <html lang="pt-BR">
 <head>
   <meta charset="UTF-8" />
-  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app-cdn.clickup.com 'unsafe-inline'; frame-src https://forms.clickup.com; font-src https://fonts.gstatic.com https://fonts.googleapis.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data:; connect-src 'none'" />
+  <meta http-equiv="Content-Security-Policy" content="default-src 'self'; script-src 'self' https://app-cdn.clickup.com 'unsafe-inline'; frame-src https://forms.clickup.com; font-src https://fonts.gstatic.com https://fonts.googleapis.com; style-src 'self' https://fonts.googleapis.com 'unsafe-inline'; img-src 'self' data: https://forms.clickup.com https://t.clickup.com https://app-cdn.clickup.com; connect-src https://forms.clickup.com https://app-cdn.clickup.com https://api.clickup.com" />
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SBK — Portal de Atendimento</title>
@@ -645,7 +645,7 @@
     <iframe id="iframe-failure"
             class="clickup-embed clickup-dynamic-height"
             title="Formulário — Reportar Falha"
-            sandbox="allow-scripts allow-forms"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
             onwheel=""
             onload="onIframeLoad('failure')"
             tabindex="0">
@@ -705,7 +705,7 @@
     <iframe id="iframe-request"
             class="clickup-embed clickup-dynamic-height"
             title="Formulário — Abrir Solicitação"
-            sandbox="allow-scripts allow-forms"
+            sandbox="allow-scripts allow-forms allow-same-origin allow-popups"
             onwheel=""
             onload="onIframeLoad('request')"
             tabindex="0">
@@ -800,7 +800,7 @@
           : (typeof d.clickup_form_height === 'number') ? d.clickup_form_height
           : (d.data && typeof d.data.height === 'number') ? d.data.height
           : null;
-    if (h < 100 || h > 10000) return;
+    if (h === null || h <= 0 || h > 10000) return;
 
     /* Identify which iframe sent this message by matching contentWindow */
     ['failure', 'request'].forEach(function(name) {
