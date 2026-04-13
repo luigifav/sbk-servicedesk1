@@ -525,7 +525,7 @@
         <p class="card-desc">
           Algo está fora do ar ou funcionando incorretamente?
           Registre incidentes, falhas técnicas e interrupções para
-          que nossa equipe atue com prioridade, acompanhe o andamento pelo email que receberão de servicedesk@sbk.com.br.
+          que nossa equipe atue com prioridade, acompanhe o andamento pelo email que receberão de <span class="obf-email" data-u="servicedesk" data-d="sbk.com.br" aria-label="servicedesk arroba sbk.com.br"></span>.
         </p>
 
         <div class="card-tags" aria-label="Exemplos de uso">
@@ -568,7 +568,7 @@
         <p class="card-desc">
           Precisa de um novo recurso, acesso, equipamento ou serviço?
           Envie uma solicitação formal e acompanhe o andamento pelo
-          email que receberão de servicedesk@sbk.com.br.
+          email que receberão de <span class="obf-email" data-u="servicedesk" data-d="sbk.com.br" aria-label="servicedesk arroba sbk.com.br"></span>.
         </p>
 
         <div class="card-tags" aria-label="Exemplos de uso">
@@ -811,6 +811,14 @@
   /* ── Escape returns to selection ───────────────────────────────────── */
   document.addEventListener('keydown', e => {
     if (e.key === 'Escape' && current !== 'select') showScreen('select');
+  });
+</script>
+
+<script>
+  /* ── Email obfuscation — reconstruct addresses from data attributes ── */
+  document.querySelectorAll('.obf-email').forEach(function(el) {
+    var addr = el.dataset.u + '\u0040' + el.dataset.d;
+    el.textContent = addr;
   });
 </script>
 
