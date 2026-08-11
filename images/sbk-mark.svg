@@ -1,0 +1,13 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="30" height="30" viewBox="0 0 30 30" role="img" aria-label="SBK">
+  <title>SBK</title>
+  <!--
+    Símbolo SBK — sistema de cards (Brand Book 2026).
+    Monocromático: as camadas se diferenciam apenas por opacidade (60-100%).
+    Versão Verde Escuro, para fundos claros. Para fundos escuros, troque o fill por #FFFFFF.
+  -->
+  <g fill="#023631">
+    <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
+    <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
+    <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
+  </g>
+</svg>

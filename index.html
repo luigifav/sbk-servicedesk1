@@ -6,19 +6,33 @@
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SBK — Portal de Atendimento</title>
+  <link rel="icon" type="image/svg+xml" href="images/favicon.svg" />
   <!-- TODO: self-host Plus Jakarta Sans to eliminate Google Fonts dependency and enable SRI -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
-  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@400;600&display=swap" rel="stylesheet" />
+  <link href="https://fonts.googleapis.com/css2?family=Plus+Jakarta+Sans:wght@300;400;600&display=swap" rel="stylesheet" />
   <style>
     /* ─── Reset ────────────────────────────────────────────────────── */
     *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
 
     :root {
-      /* ── SBK Brand Palette ── */
-      --bg:             #EEF0F4;
+      /* ── SBK Brand Palette — Brand Book 2026 (fonte única da verdade) ──
+         Primárias */
+      --sbk-verde-escuro:   #023631;
+      --sbk-ciano-escuro:   #075056;
+      --sbk-off-white:      #ECEFF3;
+      /* Secundárias */
+      --sbk-verde-claro:    #0A5A52;
+      --sbk-verde-profundo: #012824;
+      --sbk-ciano:          #2A7C79;
+      --sbk-ciano-profundo: #0E4442;
+      --sbk-chumbo-leve:    #4A545E;
+      --sbk-branco:         #FFFFFF;
+
+      /* ── Tokens de aplicação ── */
+      --bg:             var(--sbk-off-white);
       --surface:        #FFFFFF;
-      --header-bg:      #1F3A3A;
+      --header-bg:      var(--sbk-verde-escuro);
       --footer-bg:      #24262D;
 
       --border:         #D5DAE4;
@@ -37,7 +51,12 @@
       --turquoise-tint: rgba(1,178,170,.08);
       --teal-tint:      rgba(31,58,58,.07);
 
+      /* Barra superior — padronizada entre todos os portais SBK */
       --header-h:       64px;
+      --header-rule-h:  2px;
+      --header-rule-from: var(--sbk-ciano);
+      --header-rule-to:   var(--sbk-verde-escuro);
+
       --radius:         8px;
       --radius-btn:     4px;
       --transition:     .28s cubic-bezier(.4,0,.2,1);
@@ -86,37 +105,50 @@
       gap: 14px;
     }
 
-    /* Turquoise→teal gradient rule under every header */
+    /* Fio Ciano→Verde Escuro sob todas as barras superiores */
     .header-rule {
-      height: 2px;
-      min-height: 2px;
-      background: linear-gradient(90deg, var(--turquoise) 0%, var(--teal-dark) 100%);
+      height: var(--header-rule-h);
+      min-height: var(--header-rule-h);
+      background: linear-gradient(90deg, var(--header-rule-from) 0%, var(--header-rule-to) 100%);
       flex-shrink: 0;
     }
 
-    /* ── SBK Logo ── */
+    /* ── Logo oficial SBK (símbolo em cards + wordmark) ── */
     .sbk-logo {
       display: flex;
       align-items: center;
-      gap: 10px;
+      gap: 12px;
       text-decoration: none;
       user-select: none;
       flex-shrink: 0;
+      /* Zona de respiro: nada encosta na logo (Brand Book 2026) */
+      padding-right: 4px;
     }
-    .sbk-mark { display: flex; align-items: center; }
+    .sbk-mark {
+      display: flex;
+      align-items: center;
+      /* cor única da logo — versão branca sobre fundo escuro */
+      color: var(--sbk-branco);
+    }
+    .sbk-symbol {
+      width: 30px;
+      height: 30px;
+      display: block;
+      fill: currentColor;
+    }
     .sbk-wordgroup { display: flex; flex-direction: column; }
     .sbk-wordmark {
       font-size: 19px;
       font-weight: 600;
       letter-spacing: -.01em;
-      color: #FFFFFF;
+      color: var(--sbk-branco);
       line-height: 1;
     }
     .sbk-sub {
       display: block;
       font-size: 9.5px;
-      font-weight: 400;
-      color: rgba(255,255,255,.45);
+      font-weight: 300;
+      color: rgba(255,255,255,.55);
       letter-spacing: .08em;
       text-transform: uppercase;
       margin-top: 3px;
@@ -480,9 +512,10 @@
     <a class="sbk-logo" href="#" onclick="return false;" aria-label="SBK Portal de Atendimento">
       <!-- SBK angular blade mark -->
       <span class="sbk-mark" aria-hidden="true">
-        <svg width="32" height="26" viewBox="0 0 32 26" fill="none">
-          <path d="M0 26 L8.5 0 L13.5 0 L5 26 Z" fill="#01B2AA"/>
-          <path d="M17 26 L23 8 L28 8 L22 26 Z" fill="white" opacity=".8"/>
+        <svg class="sbk-symbol" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
+          <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
+          <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
+          <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
         </svg>
       </span>
       <span class="sbk-wordgroup">
@@ -606,9 +639,10 @@
   <header class="site-header">
     <a class="sbk-logo" href="#" onclick="return false;" aria-label="SBK">
       <span class="sbk-mark" aria-hidden="true">
-        <svg width="32" height="26" viewBox="0 0 32 26" fill="none">
-          <path d="M0 26 L8.5 0 L13.5 0 L5 26 Z" fill="#01B2AA"/>
-          <path d="M17 26 L23 8 L28 8 L22 26 Z" fill="white" opacity=".8"/>
+        <svg class="sbk-symbol" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
+          <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
+          <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
+          <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
         </svg>
       </span>
       <span class="sbk-wordgroup">
@@ -666,9 +700,10 @@
   <header class="site-header">
     <a class="sbk-logo" href="#" onclick="return false;" aria-label="SBK">
       <span class="sbk-mark" aria-hidden="true">
-        <svg width="32" height="26" viewBox="0 0 32 26" fill="none">
-          <path d="M0 26 L8.5 0 L13.5 0 L5 26 Z" fill="#01B2AA"/>
-          <path d="M17 26 L23 8 L28 8 L22 26 Z" fill="white" opacity=".8"/>
+        <svg class="sbk-symbol" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
+          <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
+          <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
+          <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
         </svg>
       </span>
       <span class="sbk-wordgroup">
