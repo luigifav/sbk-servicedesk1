@@ -6,7 +6,7 @@
   <meta http-equiv="X-Frame-Options" content="DENY" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
   <title>SBK — Central de Chamados Internos</title>
-  <link rel="icon" type="image/svg+xml" href="../images/favicon.svg" />
+  <link rel="icon" type="image/png" href="../images/favicon.png" />
   <!-- TODO: self-host Plus Jakarta Sans to eliminate Google Fonts dependency and enable SRI -->
   <link rel="preconnect" href="https://fonts.googleapis.com" />
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
@@ -54,6 +54,10 @@
       /* Barra superior — padronizada entre todos os portais SBK */
       --header-h:       64px;
       --header-rule-h:  2px;
+      /* Logo oficial: altura de aplicação e zona de respiro (Brand Book 2.3,
+         área livre equivalente à altura da logo) */
+      --logo-h:         28px;
+      --logo-clear:     28px;
       --header-rule-from: var(--sbk-ciano);
       --header-rule-to:   var(--sbk-verde-escuro);
 
@@ -113,36 +117,24 @@
       flex-shrink: 0;
     }
 
-    /* ── Logo oficial SBK (símbolo em cards + wordmark) ── */
+    /* ── Logo oficial SBK (Brand Book 2026, seção 2.1) ──
+       Arte oficial em PNG com fundo transparente, versão branca para fundos
+       escuros. Não redesenhar o símbolo nem substituir a tipografia do
+       wordmark: a fonte da logomarca é exclusiva e não se replica. */
     .sbk-logo {
       display: flex;
       align-items: center;
-      gap: 12px;
       text-decoration: none;
       user-select: none;
       flex-shrink: 0;
-      /* Zona de respiro: nada encosta na logo (Brand Book 2026) */
-      padding-right: 4px;
+      /* Zona de respiro (seção 2.3): somada ao gap de 14px do header,
+         garante --logo-clear de área livre à direita da logo. */
+      margin-right: calc(var(--logo-clear) - 14px);
     }
-    .sbk-mark {
-      display: flex;
-      align-items: center;
-      /* cor única da logo — versão branca sobre fundo escuro */
-      color: var(--sbk-branco);
-    }
-    .sbk-symbol {
-      width: 30px;
-      height: 30px;
+    .sbk-logo-img {
+      height: var(--logo-h);
+      width: auto;
       display: block;
-      fill: currentColor;
-    }
-    .sbk-wordgroup { display: flex; flex-direction: column; }
-    .sbk-wordmark {
-      font-size: 19px;
-      font-weight: 600;
-      letter-spacing: -.01em;
-      color: var(--sbk-branco);
-      line-height: 1;
     }
     .sbk-sub {
       display: block;
@@ -151,7 +143,7 @@
       color: rgba(255,255,255,.55);
       letter-spacing: .08em;
       text-transform: uppercase;
-      margin-top: 3px;
+      flex-shrink: 0;
     }
 
     .h-sep {
@@ -510,19 +502,11 @@
 
   <header class="site-header">
     <a class="sbk-logo" href="#" onclick="return false;" aria-label="SBK Central de Chamados Internos">
-      <!-- SBK angular blade mark -->
-      <span class="sbk-mark" aria-hidden="true">
-        <svg class="sbk-symbol" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
-          <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
-          <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
-          <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
-        </svg>
-      </span>
-      <span class="sbk-wordgroup">
-        <span class="sbk-wordmark">SBK</span>
-        <span class="sbk-sub">Central de Chamados Internos</span>
-      </span>
+      <!-- Logo oficial SBK — Brand Book 2026 (arte original, PNG transparente) -->
+      <img class="sbk-logo-img" src="../images/sbk-logo-branca.png"
+           alt="SBK" width="660" height="314" />
     </a>
+    <span class="sbk-sub">Central de Chamados Internos</span>
     <div class="h-spacer"></div>
   </header>
   <div class="header-rule" aria-hidden="true"></div>
@@ -644,16 +628,9 @@
 
   <header class="site-header">
     <a class="sbk-logo" href="#" onclick="return false;" aria-label="SBK">
-      <span class="sbk-mark" aria-hidden="true">
-        <svg class="sbk-symbol" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
-          <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
-          <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
-          <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
-        </svg>
-      </span>
-      <span class="sbk-wordgroup">
-        <span class="sbk-wordmark">SBK</span>
-      </span>
+      <!-- Logo oficial SBK — Brand Book 2026 (arte original, PNG transparente) -->
+      <img class="sbk-logo-img" src="../images/sbk-logo-branca.png"
+           alt="SBK" width="660" height="314" />
     </a>
 
     <div class="h-sep" aria-hidden="true"></div>
@@ -705,16 +682,9 @@
 
   <header class="site-header">
     <a class="sbk-logo" href="#" onclick="return false;" aria-label="SBK">
-      <span class="sbk-mark" aria-hidden="true">
-        <svg class="sbk-symbol" viewBox="0 0 30 30" fill="currentColor" aria-hidden="true">
-          <rect x="0.8" y="18.4" width="10.8" height="10.8" rx="3.4"/>
-          <rect x="9.6" y="9.6" width="10.8" height="10.8" rx="3.4" opacity=".8"/>
-          <rect x="18.4" y="0.8" width="10.8" height="10.8" rx="3.4" opacity=".6"/>
-        </svg>
-      </span>
-      <span class="sbk-wordgroup">
-        <span class="sbk-wordmark">SBK</span>
-      </span>
+      <!-- Logo oficial SBK — Brand Book 2026 (arte original, PNG transparente) -->
+      <img class="sbk-logo-img" src="../images/sbk-logo-branca.png"
+           alt="SBK" width="660" height="314" />
     </a>
 
     <div class="h-sep" aria-hidden="true"></div>
